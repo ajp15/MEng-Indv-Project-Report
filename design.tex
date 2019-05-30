@@ -1,0 +1,76 @@
+The prototype developed intends to be integrated with a PCB currently being developed by the research group (see \textbf{Appendix 1}). The PCB consists of five potentiometric channels, allowing for the measurement of potassium ion concentration, and four amperometric channels to allow for glucose and lactate concentration measurements. Whilst the amperometric channels record current, this is then converted into a digital voltage form. An ADS1298, which is a 24-bit resolution analogue-to-digital converter (ADC), receives the input measurements simultaneously and discretises and amplifies the signals \cite{TexasInstruments2010}. An ATmega328p microcontroller is used and the PCB allows for both SPI (serial peripheral interface) and UART (universal asynchronous receiver-transmitter) data transmission capabilities.
+
+The prototype developed is a simplified model of the PCB. The prototype receives three amplified voltage signals, so it assumes the current values from the lactate and glucose sensors have been converted into voltage, and all the signals have been amplified. The prototype then extends further from the functionality of the PCB by developing the wireless transmission of the data and the development of an iPad application, as shown in the flowchart in Figure~\ref{fig: flowchart}. The code for this project can be found in  \textbf{Appendix 2}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[trim={0cm 6cm 0.5cm  2cm}, clip, width=1\textwidth]{./figures/Flowchart.pdf}
+\captionsetup{justification=centering}
+\caption{Flowchart of the key elements in the prototype system}
+\label{fig: flowchart}
+\end{figure}
+
+
+
+\subsection{Hardware}
+The prototype of the hardware consists of an Arduino Nano and a Adafruit Bluefruit LE SPI Friend, as shown in Figure X. The Arduino Nano was chosen as a suitable microcontroller for prototyping and mimicking the PCB as it also contains an ATmega328p microcontroller and has an inbuilt ADC. However, the ADC is only 10-bit, so it has poorer precision than the ADS1298. The arduino is also simple to programme due to the IDE and libraries available, making it suitable for prototyping.
+
+The Arduino Nano receives three input voltage signals ranging from 0V to 5V at the analogue pins A0, A1, and A7. The signals are discretised by the inbuilt ADC. The nano records the time at which each signal is read, along with the value of the signal. The signal recordings are processed before being passed to the Bluefruit.
+
+% Insert Figure of Breadboard (made on Fritzing)%
+
+
+
+
+\subsection{Signal Processing}
+Each input signal received by the Arduino is filtered with a low-pass filter with a cut off frequency of 1Hz. This cut off frequency was chosen because the events indicating a SD occur over a long time frame, as shown in Figure~\ref{fig: SD}, hence the changes occur slowly. The low pass filter attenuates high frequency components that may arise from noise or patient movement, allowing for a cleaner signal to be obtained that contains the relevant data.
+
+
+
+
+
+
+
+\subsection{Wireless Transmission}
+Bluetooth Low Energy (BLE) and ZigBee are both popular wireless data transmission options for IoT projects. Table~\ref{table:BLE vs ZigBee} summarises the differences between BLE and ZigBee.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{||c c||} 
+ \hline
+ BLE & ZigBee \\ [0.5ex] 
+ \hline\hline
+ Short range (77m) & Medium range (291m) \\
+ Higher data rate: 1Mbps bursts & Lower data rate: 250kbps \\ 
+ PAN (personal area network) & LAN (local area network) \\
+ Throughput: 0.27Mbps & Throughput: 0.03Mbps \\
+ Latency: 3-6ms & Latency: 15ms \\
+ Sleeps between bursts $\rightarrow$ uses less power & No sleep functionality \\
+ Supported on most OSs including iOS & Not supported on most OSs \\
+ \hline
+\end{tabular}
+\caption{BLE vs. ZigBee \cite{Ray2015, Christiano}}
+\label{table:BLE vs ZigBee}
+\end{table}
+
+For this project, BLE is the most suitable option. BLE offers more efficient data transfer and is compatible with iOS. BLE has a shorter range than ZigBee, but this is not of hindrance as the patient will remain close to the iPad that will receive the signals. BLE is commonly used for health and fitness trackers, making it a suitable method of transmission for this project's application.
+
+Adafruit provide a variety of Bluetooth low energy modules that are compatible with Arduino and provide a library that can be used with the Arduino IDE: Adafruit\_BluefruitLE\_nRF51. Adafruit also provide an iOS app to test the bluetooth module and view the received signals. Whilst the PCB being developed allows for both SPI and UART data transmission, SPI was the chosen mode for the prototype hence the Bluefruit LE SPI Friend was chosen over the Bluefruit LE UART Friend. Both share similarities and have the same library that is used in the Arduino IDE, however SPI was preferred as it has a clock line so data can be sent along with the clock pulses so the timing of when data is sent is more reliable. The Arduino Nano has inbuilt SPI pins: D11 is MOSI, D12 is MISO and D13 is SCK. These connect to the corresponding pins on the Bluefruit. D10 on the arduino is programmed as the CS, and D7 is programmed as the IRQ. 
+
+The Adafruit\_BluefruitLE\_nRF51 library provides a header file specifically for the Bluefruit LE SPI Friend which provides functions that allow for the transmission of data via BLE to a paired device, such as {\tt{ble.print()}}. The limitation of this function is that a maximum of 20 characters can be sent otherwise the data becomes fragmented. This means that the data from each input signal and the corresponding time of recording has to be wirelessly transmitted one at a time rather than all three at once to prevent the risk of fragmentation. The data for each input signal is outputted in characters as:
+
+\begin{align}
+    Output = ID + Time + Value + \backslash n.
+    \nonumber
+\end{align}
+
+The ID at the beginning identifies which signal is being read i.e. G for glucose, and the newline character ($\backslash$n) at the end concludes the data transmission. If both these identifiers are not in place, this indicates that the data is fragmented so the app knows to discard the data. 
+
+Another limitation observed was when the data set (all three signals) were periodically sent over 200ms, the data would initially be sent correctly but after some time, the data would fragment. The Bluefruit struggled to send data so quickly which created a backlog of data that was responsible for the fragmentation. Eventually, the Bluetooth module would disconnect from the app. To prevent this, data was sent with a delay of 200ms, 200ms, 600ms, so that a set of data was periodically sent every 1s. Since the electrochemical changes in the brain occur at slow rates, for example an SD event takes about 10 minutes, a sampling speed of 1s is suitable for this application. 
+
+
+
+
+
+\subsection{iPad Application}
+The iPad app was written in Swift using XCode. The story board is shown in Figure X.
