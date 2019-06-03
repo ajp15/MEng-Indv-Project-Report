@@ -1,10 +1,18 @@
-The prototype developed intends to be integrated with a PCB currently being developed by the research group (see \textbf{Appendix 1}). The PCB consists of five potentiometric channels, allowing for the measurement of potassium ion concentration, and four amperometric channels to allow for glucose and lactate concentration measurements. Whilst the amperometric channels record current, this is then converted into a digital voltage form. An ADS1298, which is a 24-bit resolution analogue-to-digital converter (ADC), receives the input measurements simultaneously and discretises and amplifies the signals \cite{TexasInstruments2010}. An ATmega328p microcontroller is used and the PCB allows for both SPI (serial peripheral interface) and UART (universal asynchronous receiver-transmitter) data transmission capabilities.
-
-The prototype developed is a simplified model of the PCB. The prototype receives three amplified voltage signals, so it assumes the current values from the lactate and glucose sensors have been converted into voltage, and all the signals have been amplified. The prototype then extends further from the functionality of the PCB by developing the wireless transmission of the data and the development of an iPad application, as shown in the flowchart in Figure~\ref{fig: flowchart}. The code for this project can be found in  \textbf{Appendix 2}.
+The prototype developed intends to be integrated with a PCB currently being developed by the research group. The PCB consists of five potentiometric channels, allowing for the measurement of potassium ion concentration, and four amperometric channels to allow for glucose and lactate concentration measurements. The potentiometric readings are amplified using an instrumental amplifier, and the amperometric readings are amplified using a transimpedance amplifier, which also converts the current to voltage. An ADS1298, which is a 24-bit resolution analogue-to-digital converter (ADC), receives the input measurements simultaneously and discretises and further amplifies the signals \cite{TexasInstruments2010}. An ATmega328p microcontroller is used and the PCB allows for both SPI (serial peripheral interface) and UART (universal asynchronous receiver-transmitter) data transmission capabilities. The PCB design in summarised in the block diagram in Figure~\ref{fig: PCB block diagram}.
 
 \begin{figure}[H]
 \centering
-\includegraphics[trim={0cm 6cm 0.5cm  2cm}, clip, width=1\textwidth]{./figures/Flowchart.pdf}
+\includegraphics[trim={0cm 22cm 0.5cm  2.5cm}, clip, width=1\textwidth]{./figures/CircuitBlockDiagram.pdf}
+\captionsetup{justification=centering}
+\caption{Block Diagram of the PCB being developed by the Boutelle Research Group for continuous monitoring of TBI markers}
+\label{fig: PCB block diagram}
+\end{figure}
+
+The prototype developed is a simplified model of the PCB. The prototype receives three amplified voltage signals, corresponding to glucose, lactate and potassium, so it continues on from the PCB block diagram after the ADS1298. The prototype then extends further from the functionality of the PCB by processing the received signals, developing the wireless transmission of the data and developing an iPad application, as shown in the flowchart in Figure~\ref{fig: flowchart}. The code for this project can be found in Appendix~\ref{appendix: a}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[trim={0cm 19.5cm 0.5cm  2.5cm}, clip, width=1\textwidth]{./figures/Flowchart.pdf}
 \captionsetup{justification=centering}
 \caption{Flowchart of the key elements in the prototype system}
 \label{fig: flowchart}
@@ -13,12 +21,17 @@ The prototype developed is a simplified model of the PCB. The prototype receives
 
 
 \subsection{Hardware}
-The prototype of the hardware consists of an Arduino Nano and a Adafruit Bluefruit LE SPI Friend, as shown in Figure X. The Arduino Nano was chosen as a suitable microcontroller for prototyping and mimicking the PCB as it also contains an ATmega328p microcontroller and has an inbuilt ADC. However, the ADC is only 10-bit, so it has poorer precision than the ADS1298. The Arduino is also simple to programme due to the IDE and libraries available, making it suitable for prototyping.
+The hardware of the prototype consists of an Arduino Nano and a Adafruit Bluefruit LE SPI Friend, as shown in Figure~\ref{fig: breadboard}. The Arduino Nano was chosen as a suitable microcontroller for prototyping and mimicking the PCB as it also contains an ATmega328p microcontroller and has an inbuilt ADC. However, the ADC is only 10-bit, so it has poorer precision than the ADS1298. The Arduino is also simple to programme due to the IDE and libraries available, making it suitable for prototyping.
 
-The Arduino Nano receives three input voltage signals ranging from 0V to 5V at the analogue pins A0, A1, and A7. The signals are discretised by the inbuilt ADC. The nano records the time at which each signal is read, along with the value of the signal. The signal recordings are processed before being passed to the Bluefruit.
+\begin{figure}[H]
+\centering
+\includegraphics[trim={0cm 10.5cm 0cm  10cm}, clip, width=1\textwidth]{./figures/Breadboard2.pdf}
+\captionsetup{justification=centering}
+\caption{Prototype assembled on breadboard}
+\label{fig: breadboard}
+\end{figure}
 
-% Insert Figure of Breadboard (made on Fritzing)%
-
+The Arduino Nano receives three input voltage signals ranging from 0V to 5V at the analogue pins A0, A1, and A7. These input pins correspond to glucose, lactate, and potassium. The signals are discretised by the inbuilt ADC. The Nano records the time at which each signal is read, along with the value of the signal. The signal recordings are processed before being passed to the Bluefruit.
 
 
 
