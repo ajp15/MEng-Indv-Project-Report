@@ -35,21 +35,29 @@ The Arduino Nano receives three input voltage signals ranging from 0V to 5V at t
 
 
 
-\subsection{Signal Processing}
+\subsection{Firmware}
+The Arduino Nano is encoded to sample and process the three input signals received, then to control the Bluefruit to wirelessly transmit the signals via Bluetooth low energy (BLE). The algorithm encoded in the Arduino is described in Figure~\ref{fig: psuedocode}.
+
+
+\subsubsection{Signal Processing}
 Every 200ms the Arduino reads the input signals at the A0, A1 and A7 pins and records the time at which sampling occurred. The recorded data is mapped to its corresponding voltage value. For every five samples of data recorded, so in a 1s period, the average voltage is calculated for each signal. This averaging methods allows large deviations and spikes to be smoothed, thereby reducing the effect of noise on the outputted data.
 
 Each input signal received by the Arduino is filtered with a low-pass filter with a cut off frequency of 1Hz. This cut off frequency was chosen because the events indicating a SD occur over a long time frame, as shown in Figure~\ref{fig: SD}, hence the changes occur slowly and at low frequency. The low pass filter attenuates high frequency components that may arise from noise or patient movement, allowing for a cleaner signal to be obtained that contains the relevant data.
 
 
+\subsubsection{Wireless Transmission}
 
+\begin{figure}[t!]
+\centering
+\includegraphics[trim={1cm 5cm 1cm  4cm}, clip, width=1\textwidth]{./figures/psuedocode.pdf}
+\captionsetup{justification=centering}
+\caption{Flowchart of algorithm encoded in Arduino Nano}
+\label{fig: psuedocode}
+\end{figure}
 
-
-
-
-\subsection{Wireless Transmission}
 Bluetooth Low Energy (BLE) and ZigBee are both popular wireless data transmission options for IoT projects. Table~\ref{table:BLE vs ZigBee} summarises the differences between BLE and ZigBee.
 
-\begin{table}[H]
+\begin{table}[t!]
 \centering
 \begin{tabular}{||c c||} 
  \hline
