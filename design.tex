@@ -109,14 +109,31 @@ The app receives the strings of data sent by the Bluefruit and checks that the \
 
 
 \subsubsection{Charts API}
-To convey the information to the clinician clearly, the data received was displayed graphically using the Charts API developed by Daniel Gindi. The API allowed for basic graphs to be fully customised based on the needs for this project. The graphs display the voltage recorded from an input pin against the real clock time of the reading for each electrochemical signal. The app allows for all three signals to be viewed on one graph, as seen on the Chemical Composition page in Figure~\ref{fig: storyboard}, or as individual plots shown in pages 3a, 3b and 3c. These individual plots can be accessed by clicking on the graph legends on the Chemical Composition Page, located above the graph. All graphs can be scaled and are zoombale, allowing to clearly view specific data. Furthermore, clicking on a specific point on a plot displays a grey bubble at the location which shows the corresponding x and y value at that point. This feature can be seen on the Chemical Composition page but works across all plots on all pages.
+To convey the information to the clinician clearly, the data received was displayed graphically using the Charts API developed by Daniel Gindi. The API allowed for basic graphs to be fully customised based on the needs of this project. The graphs display the voltage recorded from an input pin against the real clock time of the reading for each electrochemical signal. The app allows for all three signals to be viewed on one graph, as seen on the Chemical Composition page in Figure~\ref{fig: storyboard}, or as individual plots shown in pages 3a, 3b and 3c. These individual plots can be accessed by clicking on the graph legends on the Chemical Composition page, located above the graph. All graphs can be scaled and are zoombale, allowing to clearly view specific data. Furthermore, clicking on a specific point on a plot displays a grey bubble at the location which shows the corresponding x and y value at that point. This feature can be seen on the Chemical Composition page but works across all plots on all pages.
 
 
 \subsubsection{Calibration}
+In the individual concentration plots on pages 3a, 3b, and 3c in Figure~\ref{fig: storyboard}, in the top right corner of the graph there is a segmented control button that has \textit{Voltage} on the left and \textit{Concentration} on the right. Selecting a button allows to view the graph with either voltage or concentration on the y-axis. To convert the voltage values received into the corresponding concentration of the electrochemical signal in the brain, the relationship between the two needs to be known. This is obtained through calibration. 
 
-% mention toggle switch to change between voltage on y axis to corresponding concentration for individual plot graphs. need to know relationship between V and conc. found through calibration
+\begin{table}[h!]
+\centering
+\begin{tabular}{||c c c||} 
+ \hline
+ [K+] (mM) & [Glucose] (mM) & [Lactate] (mM) \\ [0.5ex] 
+ \hline\hline
+ 2.70 & 0.00 & 0.00 \\
+ 6.35 & 1.00 & 0.50 \\
+ 10.00 & 2.00 & 1.00 \\
+ \hline
+\end{tabular}
+\caption{Known concentrations of solutions used for calibration}
+\label{table: calibration conc}
+\end{table}
 
-% frequent calibration since sensors degrade. Include table at which for each electrochemical signal, the conc values voltages are found for. Chemcomp can insert calibration values. if calibration values aren't provided, doesnt plot a conc vs time plot
+During calibration, known concentrations of potassium ions, glucose and lactate, shown in Table~\ref{table: calibration conc}, are provided to the microdialysis system and the outputted voltage is recorded. Whilst monitoring a patient, calibration occurs at frequent intervals as the sensors degrade over time, hence voltage output for the same known concentration will change with time. The Chemical Composition page of the app allows for the calibration values to be typed into the text field. Once the calibration voltages have been inputted, the input voltages can be converted into concentration when the \textit{Concentration} button is clicked on the segmented control, and the graph displays concentration against real time. If calibration values aren't provided and the \textit{Concentration} button is clicked, the app will prompt the user to insert the calibration voltages on the Chemical Composition page.
+
+
+
 
 % K+ derivation
 
