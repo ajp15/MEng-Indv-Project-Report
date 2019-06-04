@@ -163,10 +163,22 @@ Since the concentrations of glucose and lactate being measured is low, such that
 
 \noindent Since the transimpedance amplifier converts the current to voltage, the relationship between voltage and concentration is a linear in the form of $y = mx + c$.
 
-During calibration, only three known concentrations of solutions are used and the corresponding voltages recorded. Having few data points reduces the accuracy of the linear equation that best fits through the data points. Furthermore, there are numerous lines of best fit that would fit the data. 
+During calibration, only three known concentrations of solutions are used and the corresponding voltages recorded. Having few data points reduces the accuracy of the linear equation that best fits through the data points. Furthermore, there are numerous lines of best fit that would fit the data. Therefore, the optimal line of best fit can be found using least squares regression:
+
+\begin{equation}
+    m = \frac{ \sum_{i=1}^{3} \big( x_{i} - \Bar{X} \big) \big( y_{i} - \Bar{Y} \big) }{ \sum_{i=1}^{3} \big( x_{i} - \Bar{X} \big)^{2} },
+    \label{equation: least squares regression}
+\end{equation}
+\begin{equation}
+    c = \Bar{Y} - m\Bar{X},
+\end{equation}
+
+\noindent where $x_{i}$ is voltage recording, $\Bar{X}$ is the average voltage recording, $y_i$ is the known concentration, and $\Bar{Y}$ is the average concentration from the data set. 
+
+Now that the $m$ and $c$ coefficients have been determined, using $Concentration = m*Voltage + c$ the plot of voltage vs. time can be transposed into concentration vs. time for glucose and lactate.
+
 
 % K+ derivation
 
-% glucose and lactate linear derivation. mention hill equation -> linear. Limitation with 3 points -> many lines of best fit -> use least squares method to find best line of best fit
 
 
