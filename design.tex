@@ -2,7 +2,7 @@ The prototype developed intends to be integrated with a PCB currently being deve
 
 \begin{figure}[H]
 \centering
-\includegraphics[trim={0cm 22cm 0.5cm  2.5cm}, clip, width=1\textwidth]{./figures/CircuitBlockDiagram.pdf}
+\includegraphics[trim={0cm 20.5cm 0.5cm  2.5cm}, clip, width=1\textwidth]{./figures/CircuitBlockDiagram.pdf}
 \captionsetup{justification=centering}
 \caption{Block Diagram of the PCB being developed by the Boutelle Research Group for continuous monitoring of TBI markers}
 \label{fig: PCB block diagram}
@@ -97,7 +97,7 @@ Another limitation was observed when all three inputs were periodically sent wit
 \subsection{iPad Application}
 The iPad app was written in Swift using XCode. The app layout is shown in Figure~\ref{fig: storyboard}. The three pages shown in section 3 of Figure~\ref{fig: storyboard} all have the same layout. Details of this layout can be seen clearly on the Potassium Ion Concentration page, and the pages Glucose Concentration and Lactate Concentration have the same features. 
 
-The app receives the strings of data sent by the Bluefruit and checks that the \textit{ID} and newline character are in place. Depending on the \textit{ID}, the app stores the \textit{Time} and \textit{Voltage} string in arrays corresponding to the electrochemical signal being read. Each new data point for a given electrochemical signal is received every 1s. The \textit{Time} string received is converted from the time in milliseconds into the real clock time at which the signal was read from the Arduino analogue input pin. It is important that the signals are timestamped with the real time of recording as opposed to the time at which the signals were received on the app because over time there may be a time lag in transmission.
+Once the user logs in, the app connects to the Bluefruit LE SPI Friend and receives the strings of data sent by the Bluefruit and checks that the \textit{ID} and newline character are in place. Depending on the \textit{ID}, the app stores the \textit{Time} and \textit{Voltage} string in arrays corresponding to the electrochemical signal being read, i.e. if the \textit{ID = G}, the \textit{Time} is appended to an array called  {\tt{Gtime}} and \textit{Voltage} is appended to an array called {\tt{Gvoltage}}. Each new data string for a given electrochemical signal is received every 1s. The \textit{Time} string received is converted from the time in milliseconds into the real clock time at which the signal was read from the Arduino analogue input pin. It is important that the signals are timestamped with the real time of recording as opposed to the time at which the signals were received on the app because over time there may be a time lag in transmission.
 
 \begin{figure}[p]
 \centering
@@ -130,10 +130,40 @@ In the individual concentration plots on pages 3a, 3b, and 3c in Figure~\ref{fig
 \label{table: calibration conc}
 \end{table}
 
-During calibration, known concentrations of potassium ions, glucose and lactate, shown in Table~\ref{table: calibration conc}, are provided to the microdialysis system and the outputted voltage is recorded. Whilst monitoring a patient, calibration occurs at frequent intervals as the sensors degrade over time, hence voltage output for the same known concentration will change with time. The Chemical Composition page of the app allows for the calibration values to be typed into the text field. Once the calibration voltages have been inputted, the input voltages can be converted into concentration when the \textit{Concentration} button is clicked on the segmented control, and the graph displays concentration against real time. If calibration values aren't provided and the \textit{Concentration} button is clicked, the app will prompt the user to insert the calibration voltages on the Chemical Composition page.
+During calibration, known concentrations of potassium ions, glucose and lactate, shown in Table~\ref{table: calibration conc}, are provided to the microdialysis system and the outputted voltage is recorded. Whilst monitoring a patient, calibration occurs at frequent intervals as the sensors degrade over time, hence voltage output for the same known concentration will change with time. The Chemical Composition page of the app allows for the calibration values to be typed into the text field. Once the calibration voltages have been inputted, the input voltages can be converted into concentration when the \textit{Concentration} button is clicked on the segmented control, and the graph displays concentration against real time. If calibration values aren't provided and the \textit{Concentration} button is clicked, the app will prompt the user to insert the calibration voltages on the Chemical Composition page. \newline 
 
+\noindent \underline{Potassium Calibration} 
 
+For potassium, the conversion from voltage to concentration is given by a logarithmic relationship and can be derived by considering an ion selective electrode. \textbf{** NEED TO COMPLETE **} \newline 
 
+\noindent \underline{Glucose and Lactate Calibration} 
+
+The conversion from voltage to concentration for glucose and lactate is derived from the enzymatic catalysed reaction that occurs on the electrode surface of the sensors \cite{Patel:2011:10.1016/j.bios.2010.11.033}, and can be obtained by starting from the Hill equation. Since the sensors measure current, the Hill equation is written as
+
+\begin{equation}
+    I_{rate} = \frac{I_{max}}{1 + \big( \frac{K_{m}}{[S]} \big)^{n}},
+    \label{equation: Hill equation}
+\end{equation}
+
+\noindent where $I_{rate}$ is the reaction rate, $I_{max}$ is the maximum reaction rate, $[S]$ is the substrate concentration, i.e. glucose or lactate concentration, $K_{m}$ is the substrate concentration that results in a rate that is $\frac{I_{max}}{2}$, and $n$ is the Hill coefficient which is a measure of cooperativity between the substrate and binding site.
+
+The Hill coefficient is equal to 1 since glucose and lactate have no substrate binding cooperativity. Therefore the Hill Equation can be reduced to the Michaelis-Menten equation, which is given by:
+
+\begin{equation}
+    I_{rate} = \frac{I_{max}[S]}{[S] + K_{m}}.
+    \label{equation: Michaelis_menten}
+\end{equation}
+
+Since the concentrations of glucose and lactate being measured is low, such that $[S] << K_{m}$, equation~\ref{equation: Michaelis_menten} is reduced to a linear equation:
+
+\begin{equation}
+    I_{rate} = \frac{I_{max}[S]}{K_{m}}.
+    \label{equation: reduced Michaelis_menten}
+\end{equation}
+
+\noindent Since the transimpedance amplifier converts the current to voltage, the relationship between voltage and concentration is a linear in the form of $y = mx + c$.
+
+During calibration, only three known concentrations of solutions are used and the corresponding voltages recorded. Having few data points reduces the accuracy of the linear equation that best fits through the data points. Furthermore, there are numerous lines of best fit that would fit the data. 
 
 % K+ derivation
 
