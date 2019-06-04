@@ -8,15 +8,16 @@ The prototype developed intends to be integrated with a PCB currently being deve
 \label{fig: PCB block diagram}
 \end{figure}
 
-The prototype developed is a simplified model of the PCB. The prototype receives three amplified voltage signals, corresponding to glucose, lactate and potassium, so it continues on from the PCB block diagram after the ADS1298. The prototype then extends further from the functionality of the PCB by processing the received signals, developing the wireless transmission of the data and developing an iPad application, as shown in the flowchart in Figure~\ref{fig: flowchart}. The code for this project can be found in Appendix~\ref{appendix: a}.
 
-\begin{figure}[H]
+\begin{figure}[b!]
 \centering
 \includegraphics[trim={0cm 19.5cm 0.5cm  2.5cm}, clip, width=1\textwidth]{./figures/Flowchart.pdf}
 \captionsetup{justification=centering}
 \caption{Flowchart of the key elements in the prototype system}
 \label{fig: flowchart}
 \end{figure}
+
+The prototype developed is a simplified model of the PCB. The prototype receives three amplified voltage signals, corresponding to glucose, lactate and potassium, so it continues on from the PCB block diagram after the ADS1298. The prototype then extends further from the functionality of the PCB by processing the received signals, developing the wireless transmission of the data and developing an iPad application, as shown in the flowchart in Figure~\ref{fig: flowchart}. The code for this project can be found in Appendix~\ref{appendix: a}.
 
 
 
@@ -44,9 +45,6 @@ Every 200ms the Arduino reads the input signals at the A0, A1 and A7 pins and re
 
 For every five samples of data recorded, so in a 1s period, the average voltage is calculated for each signal. This averaging methods allows large deviations and spikes to be smoothed, thereby reducing the effect of noise on the outputted data.
 
-
-\subsubsection{Wireless Transmission}
-
 \begin{figure}[t!]
 \centering
 \includegraphics[trim={1cm 5cm 1cm  4cm}, clip, width=1\textwidth]{./figures/psuedocode.pdf}
@@ -55,9 +53,12 @@ For every five samples of data recorded, so in a 1s period, the average voltage 
 \label{fig: psuedocode}
 \end{figure}
 
+
+
+\subsubsection{Wireless Transmission}
 BLE and ZigBee are both popular wireless data transmission options for IoT projects. Table~\ref{table:BLE vs ZigBee} summarises the differences between BLE and ZigBee. For this project, BLE is the most suitable option. BLE offers more efficient data transfer, shown by the lower latency time and higher throughout, and is compatible with iOS. A disadvantage of BLE is that it has a shorter range than ZigBee, however this is not of hindrance as the range is sufficient for the application since the patient will remain close to the iPad that will receive the transmitted signals. BLE is commonly used for health and fitness trackers, making it a suitable method of transmission for this project's application.
 
-\begin{table}[t!]
+\begin{table}[h!]
 \centering
 \begin{tabular}{||c c||} 
  \hline
@@ -94,18 +95,31 @@ Another limitation was observed when all three inputs were periodically sent wit
 
 
 \subsection{iPad Application}
-The iPad app was written in Swift using XCode. The app layout is shown in Figure X. The app receives the strings of data sent by the Bluefruit and checks the the \textit{ID} and newline character are in place. Depending on the \textit{ID}, the app stores the \textit{Time} and \textit{Voltage} string in arrays corresponding to the electrochemical signal being read. Each new data point for a given electrochemical signal is received every 1s. The \textit{Time} string received is converted from the time in milliseconds into the real clock time at which the signal was read from the Arduino analogue input pin. It is important that the signals are timestamped with the real time of recording as opposed to the time at which the signals were received on the app as over time there may be a time lag in transmission.
+The iPad app was written in Swift using XCode. The app layout is shown in Figure~\ref{fig: storyboard}. The three pages shown in section 3 of Figure~\ref{fig: storyboard} all have the same layout. Details of this layout can be seen clearly on the Potassium Ion Concentration page, and the pages Glucose Concentration and Lactate Concentration have the same features. 
 
-\subsubsection{iOS Charts API}
+The app receives the strings of data sent by the Bluefruit and checks that the \textit{ID} and newline character are in place. Depending on the \textit{ID}, the app stores the \textit{Time} and \textit{Voltage} string in arrays corresponding to the electrochemical signal being read. Each new data point for a given electrochemical signal is received every 1s. The \textit{Time} string received is converted from the time in milliseconds into the real clock time at which the signal was read from the Arduino analogue input pin. It is important that the signals are timestamped with the real time of recording as opposed to the time at which the signals were received on the app because over time there may be a time lag in transmission.
 
-% talk about time and voltage value plotted on graphs. uses Charts API. chemcomp displays all three plots on one graph. clicking on the button takes to the individual graphs. All graphs are zoomable and scalable. Can click on single data point and balloon marker shows x and y values
+\begin{figure}[p]
+\centering
+\includegraphics[trim={1cm 2.5cm 1cm  2cm}, clip, width=1\textwidth]{./figures/appStoryboard3.pdf}
+\captionsetup{justification=centering}
+\caption{Storyboard of the iPad application. 1) Log in page. 2) Chemical Composition page. 3a) Potassium Ion Concentration page. 3b) Glucose Concentration page. 3c) Lactate Concentration page. Pages 3a, 3b, and 3c have the same layout and are accessed from Page 2.}
+\label{fig: storyboard}
+\end{figure}
+
+
+\subsubsection{Charts API}
+To convey the information to the clinician clearly, the data received was displayed graphically using the Charts API developed by Daniel Gindi. The API allowed for basic graphs to be fully customised based on the needs for this project. The graphs display the voltage recorded from an input pin against the real clock time of the reading for each electrochemical signal. The app allows for all three signals to be viewed on one graph, as seen on the Chemical Composition page in Figure~\ref{fig: storyboard}, or as individual plots shown in pages 3a, 3b and 3c. These individual plots can be accessed by clicking on the graph legends on the Chemical Composition Page, located above the graph. All graphs can be scaled and are zoombale, allowing to clearly view specific data. Furthermore, clicking on a specific point on a plot displays a grey bubble at the location which shows the corresponding x and y value at that point. This feature can be seen on the Chemical Composition page but works across all plots on all pages.
+
 
 \subsubsection{Calibration}
+
 % mention toggle switch to change between voltage on y axis to corresponding concentration for individual plot graphs. need to know relationship between V and conc. found through calibration
 
 % frequent calibration since sensors degrade. Include table at which for each electrochemical signal, the conc values voltages are found for. Chemcomp can insert calibration values. if calibration values aren't provided, doesnt plot a conc vs time plot
 
 % K+ derivation
 
-% glucose and lactate linear derivation. mention hill equation -> linear. Limitation with 3 points -> many lines of best fit -> use least sqaures method to find best line of best fit
+% glucose and lactate linear derivation. mention hill equation -> linear. Limitation with 3 points -> many lines of best fit -> use least squares method to find best line of best fit
+
 
