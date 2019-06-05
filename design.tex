@@ -110,7 +110,7 @@ Once the user logs in, the app connects to the Bluefruit LE SPI Friend and recei
 
 
 \subsubsection{Charts API}
-To convey the information to the clinician clearly, the data received was displayed graphically using the Charts API developed by Daniel Gindi. The API allowed for basic graphs to be fully customised based on the needs of this project. The graphs display the voltage recorded from an input pin against the real clock time of the reading for each electrochemical signal. The app allows for all three signals to be viewed on one graph, as seen on the Chemical Composition page in Figure~\ref{fig: storyboard}, or as individual plots shown in pages 3a, 3b and 3c. These individual plots can be accessed by clicking on the graph legends on the Chemical Composition page, located above the graph. All graphs can be scaled and are zoombale, allowing to clearly view specific data. Furthermore, clicking on a specific point on a plot displays a grey bubble at the location which shows the corresponding x and y value at that point. This feature can be seen on the Chemical Composition page but works across all plots on all pages.
+To convey the information to the clinician clearly, the data received was displayed graphically using the Charts API developed by Daniel Gindi. The API allowed for basic graphs to be fully customised based on the needs of this project. The graphs display the voltage recorded from an input pin against the real clock time of the reading for each electrochemical signal. The app allows for all three signals to be viewed on one graph, as seen on the Chemical Composition page in Figure~\ref{fig: storyboard}, or as individual plots shown in pages 3a, 3b and 3c. These individual plots can be accessed by clicking on the graph legends on the Chemical Composition page, located above the graph. All graphs can be scaled and are zoombale, allowing to clearly view specific data. Furthermore, clicking on a specific point on a plot displays a grey bubble at the location which shows the corresponding x and y value at that point. This feature can be seen on the Chemical Composition page in Figure~\ref{fig: storyboard} but works across all plots on all pages.
 
 
 \subsubsection{Calibration}
@@ -131,15 +131,90 @@ In the individual concentration plots on pages 3a, 3b, and 3c in Figure~\ref{fig
 \label{table: calibration conc}
 \end{table}
 
-During calibration, known concentrations of potassium ions, glucose and lactate, shown in Table~\ref{table: calibration conc}, are provided to the microdialysis system and the outputted voltage is recorded. Whilst monitoring a patient, calibration occurs at frequent intervals as the sensors degrade over time, hence voltage output for the same known concentration will change with time. The Chemical Composition page of the app allows for the calibration values to be typed into the text field. Once the calibration voltages have been inputted, the input voltages can be converted into concentration when the \textit{Concentration} button is clicked on the segmented control, and the graph displays concentration against real time. If calibration values aren't provided and the \textit{Concentration} button is clicked, the app will prompt the user to insert the calibration voltages on the Chemical Composition page. \newline 
+The Boutelle Group have developed a novel auto-calibration system that uses programmable values and microfluidic pumps to deliver known concentrations of potassium, glucose and lactate, shown in Table~\ref{table: calibration conc}, to the microfluidic analysis system and the outputted voltage is recorded. Calibration occurs automatically every three hours whilst monitoring a patient because the sensors degrade over time, hence the voltage output for the same known concentration will change with time \cite{Rogers2017}. The Chemical Composition page of the app allows for the calibration values to be typed into the text field. Once the calibration voltages have been inputted, the input voltages can be converted into concentration when the \textit{Concentration} button is clicked on the segmented control, and the graph displays concentration against real time. If calibration values aren't provided and the \textit{Concentration} button is clicked, the app will prompt the user to insert the calibration voltages on the Chemical Composition page. 
 
-\noindent \underline{Potassium Calibration} 
+\subsubsection{Potassium Calibration}
+%\noindent \underline{Potassium Calibration} 
 
-For potassium, the conversion from voltage to concentration is given by a logarithmic relationship and can be derived by considering an ion selective electrode. \textbf{** NEED TO COMPLETE **} \newline 
+\begin{figure}[b!]
+\centering
+\includegraphics[trim={0cm 5cm 0cm  5cm}, clip, width=0.75\textwidth]{./figures/ISE.pdf}
+\captionsetup{justification=centering}
+\caption{Electrochemical cell for a potentiometric measurement with an ISE \cite{LibreTexts2019}}
+\label{fig: ISE}
+\end{figure}
 
-\noindent \underline{Glucose and Lactate Calibration} 
+For potassium, the conversion from voltage to concentration is given by a logarithmic relationship and can be derived by considering an ion selective electrode (ISE), as shown in Figure~\ref{fig: ISE}. The ISE has an ion-sensing membrane that responds selectively to a specific ion and outputs a voltage proportional to the activity of this ion \cite{Rogers2017, LibreTexts2019} and can be derived as follows. 
 
-The conversion from voltage to concentration for glucose and lactate is derived from the enzymatic catalysed reaction that occurs on the electrode surface of the sensors \cite{Patel:2011:10.1016/j.bios.2010.11.033}, and can be obtained by starting from the Hill equation. Since the sensors measure current, the Hill equation is written as
+The potential difference across the membrane, $E_{membrane}$ is given as the difference between the external side of the membrane, $E_{outer}$, where the analyte solution is, and the interal side of the membrane, $E_{inner}$ where the reference solution is:
+
+\begin{equation}
+    E_{membrane} = E_{ext} - E_{int}.
+    \label{equation: membrane potential}
+\end{equation}
+
+The potential on each side of the membrane can be described with respect to activity by using the Nernst Potential:
+
+\begin{equation}
+    E_{ext} = E^{0} + \frac{0.05916}{z}\log A_{k,ext}, 
+    \label{equation: outer Nernst} 
+\end{equation}
+\begin{equation}
+    E_{int} = E^{0} + \frac{0.05916}{z}\log A_{k,int}.
+    \label{equation: inner Nernst}
+\end{equation}
+
+\noindent $E^{0}$ is the standard cell potential which is a constant, $z$ is the charge of the ion of interest which in this case is potassium so $z=1$, $A_{outer}$ is the activity of potassium ions in the analyte solution, and $A_{outer}$ is the activity of the potassium ions in the reference solution which is constant. Therefore, equation (\ref{equation: inner Nernst}) is equivalent to a constant value.
+
+Substituting equations (\ref{equation: outer Nernst}) and (\ref{equation: inner Nernst}) into equation (\ref{equation: membrane potential}), the following equation is obtained:
+
+\begin{equation}
+    E_{membrane} = constant + 0.05916\log A_{k,ext}.
+    \label{equation: membrane potential 2}
+\end{equation}
+
+The relationship between activity and concentration is given as:
+
+\begin{equation}
+    A_{k,ext} = \gamma [K^{+}],
+    \label{equation: activity}
+\end{equation}
+
+\noindent where $\gamma$ is the activity coefficient which is a constant, and $[K^{+}]$ is the concentration of potassium ions. Taking the logarithm on both sides gives:
+
+\begin{align}
+    \log A_{k,ext} = \log\gamma + \log [K^{+}] = constant + \log [K^{+}].
+    \label{equation: log activity}
+\end{align}
+
+Substituting equation (\ref{equation: log activity}) into equation (\ref{equation: membrane potential 2}) gives equation (\ref{equation: membrane potential 3}) where $C$ is a constant and $V$ is $E_{membrane}$.
+
+\begin{equation}
+    V = C + 0.05916 \log [K^{+}].
+    \label{equation: membrane potential 3}
+\end{equation}
+
+Rearranging equation (\ref{equation: membrane potential 3}) gives:
+
+\begin{equation}
+    [K^{+}] = 10^{\big(\frac{V-C}{0.05916}\big)},
+    \label{equation: K+ calibration}
+\end{equation}
+
+\noindent which is the equation used to convert from voltage, measured in volts, to concentration in $mM$, given that:
+
+\begin{equation}
+    C = V_{aCSF} - 0.05916\log_{10} (2.7),
+    \label{equation: C}
+\end{equation}
+
+\noindent where $V_{aCSF}$ is the voltage produced by the potassium ions concentration of $2.7mM$ in the aCSF, measured in volts. Only the voltage corresponding $[K^{+}] = 2.7mM$ is required from the calibration set up to be substitutes into equations (\ref{equation: K+ calibration}) and (\ref{equation: C}). Once the user inputs this calibration value, the user can view the concentration against time graph on the Potassium Ion Concentration page once the $Concentration$ button is clicked. \newline
+
+
+\subsubsection{Glucose and Lactate Calibration}
+%\noindent \underline{Glucose and Lactate Calibration} 
+
+The conversion from voltage to concentration for glucose and lactate is derived from the enzymatic catalysed reaction that occurs on the electrode surface of the oxidase-based sensors \cite{Patel:2011:10.1016/j.bios.2010.11.033, Rogers2017}, and can be obtained by starting from the Hill equation. Since the sensors measure current, the Hill equation is written as
 
 \begin{equation}
     I_{rate} = \frac{I_{max}}{1 + \big( \frac{K_{m}}{[S]} \big)^{n}},
