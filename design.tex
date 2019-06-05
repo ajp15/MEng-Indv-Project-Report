@@ -1,15 +1,14 @@
 The prototype developed intends to be integrated with a PCB currently being developed by the research group. The PCB consists of five potentiometric channels, allowing for the measurement of potassium ion concentration, and four amperometric channels to allow for glucose and lactate concentration measurements. The potentiometric readings are amplified using an instrumental amplifier, and the amperometric readings are amplified using a transimpedance amplifier, which also converts the current to voltage. An ADS1298, which is a 24-bit resolution analogue-to-digital converter (ADC), receives the input measurements simultaneously and discretises and further amplifies the signals \cite{TexasInstruments2010}. An ATmega328p microcontroller is used and the PCB allows for both SPI (serial peripheral interface) and UART (universal asynchronous receiver-transmitter) data transmission capabilities. The PCB design in summarised in the block diagram in Figure~\ref{fig: PCB block diagram}.
 
-\begin{figure}[H]
+\begin{figure}[h!]
 \centering
-\includegraphics[trim={0cm 20.5cm 0.5cm  2.5cm}, clip, width=1\textwidth]{./figures/CircuitBlockDiagram.pdf}
+\includegraphics[trim={0cm 20.5cm 0.5cm  2.9cm}, clip, width=1\textwidth]{./figures/CircuitBlockDiagram.pdf}
 \captionsetup{justification=centering}
 \caption{Block Diagram of the PCB being developed by the Boutelle Research Group for continuous monitoring of TBI markers}
 \label{fig: PCB block diagram}
 \end{figure}
 
-
-\begin{figure}[b!]
+\begin{figure}[t!]
 \centering
 \includegraphics[trim={0cm 19.5cm 0.5cm  2.5cm}, clip, width=1\textwidth]{./figures/Flowchart.pdf}
 \captionsetup{justification=centering}
@@ -77,7 +76,9 @@ BLE and ZigBee are both popular wireless data transmission options for IoT proje
 \label{table:BLE vs ZigBee}
 \end{table}
 
-Adafruit provide a variety of Bluetooth low energy modules that are compatible with Arduino, and they provide a library that can be used with the Arduino IDE: Adafruit\_BluefruitLE\_nRF51. Adafruit also provide an iOS app to test the bluetooth module and view the received signals. Whilst the PCB currently being developed allows for both SPI and UART data transmission, SPI was the chosen mode for the prototype hence the Bluefruit LE SPI Friend was chosen over the Bluefruit LE UART Friend. Both share similarities and use the same library in the Arduino IDE, however SPI was preferred as it has a clock line where data can be sent along with the clock pulses, so the timing of when data is sent is more reliable. The Arduino Nano has inbuilt SPI pins: D11 is MOSI, D12 is MISO and D13 is SCK. These connect to the corresponding pins on the Bluefruit, which are shown by the orange connections in Figure~\ref{fig: breadboard}. D10 on the Arduino is programmed as the CS and D7 is programmed as the IRQ, which are then wired to the corresponding Bluefruit pins, shown by the blue wires in Figure~\ref{fig: breadboard}. 
+Adafruit provide a variety of Bluetooth low energy modules that are compatible with Arduino, and they provide a library that can be used with the Arduino IDE: Adafruit\_BluefruitLE\_nRF51. Adafruit also provide an iOS app to test the Bluetooth module and view the received signals. Whilst the PCB currently being developed allows for both SPI and UART data transmission, SPI was the chosen mode for the prototype hence the Bluefruit LE SPI Friend was chosen over the Bluefruit LE UART Friend. Both share similarities and use the same library in the Arduino IDE, however SPI was preferred as it has a clock line where data can be sent along with the clock pulses, so the timing of when data is sent is more reliable. Furthermore, the Bluefruit LE SPI Friend is smaller in size than the Bluefruit LE UART Friend, so allows the prototype to be miniaturised further. 
+
+The Arduino Nano has inbuilt SPI pins: D11 is MOSI, D12 is MISO and D13 is SCK. These connect to the corresponding pins on the Bluefruit, which are shown by the orange connections in Figure~\ref{fig: breadboard}. D10 on the Arduino is programmed as the CS and D7 is programmed as the IRQ, which are then wired to the corresponding Bluefruit pins, shown by the blue wires in Figure~\ref{fig: breadboard}. 
 
 The Adafruit\_BluefruitLE\_nRF51 library provides a header file specifically for the Bluefruit LE SPI Friend which provides functions that allow for the transmission of data via BLE to a paired device. The function used is {\tt{ble.print()}}. The limitation of this function is that a maximum of 20 characters can be sent at a time otherwise the data becomes fragmented. This means that the data from each input pin and the corresponding time of recording has to be wirelessly transmitted one at a time rather than all three sent simultaneously to prevent the risk of the data fragmenting. The data from each input pin is outputted in characters as:
 
@@ -113,7 +114,7 @@ To convey the information to the clinician clearly, the data received was displa
 
 
 \subsubsection{Calibration}
-In the individual concentration plots on pages 3a, 3b, and 3c in Figure~\ref{fig: storyboard}, in the top right corner of the graph there is a segmented control button that has \textit{Voltage} on the left and \textit{Concentration} on the right. Selecting a button allows to view the graph with either voltage or concentration on the y-axis. To convert the voltage values received into the corresponding concentration of the electrochemical signal in the brain, the relationship between the two needs to be known. This is obtained through calibration. 
+In the individual concentration plots on pages 3a, 3b, and 3c in Figure~\ref{fig: storyboard}, in the top right corner of the graph there is a segmented control button that has \textit{Voltage} on the left and \textit{Concentration} on the right. Selecting a button allows to view the graph with either voltage or concentration on the y-axis. To convert the voltage values received into the corresponding concentration of the neurochemical signal in the brain, the relationship between the two needs to be known. This is obtained through calibration. 
 
 \begin{table}[h!]
 \centering
@@ -173,7 +174,7 @@ During calibration, only three known concentrations of solutions are used and th
     c = \Bar{Y} - m\Bar{X},
 \end{equation}
 
-\noindent where $x_{i}$ is voltage recording, $\Bar{X}$ is the average voltage recording, $y_i$ is the known concentration, and $\Bar{Y}$ is the average concentration from the data set. 
+\noindent where $x_{i}$ is the voltage recording, $\Bar{X}$ is the average voltage recording, $y_i$ is the known concentration, and $\Bar{Y}$ is the average concentration from the data set. 
 
 Now that the $m$ and $c$ coefficients have been determined, using $Concentration = m*Voltage + c$ the plot of voltage vs. time can be transposed into concentration vs. time for glucose and lactate.
 
