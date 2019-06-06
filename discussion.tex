@@ -1,13 +1,14 @@
-% expanding on from results:
-
-% not so good at discontinuities on step curve. 
-% - sine wave is relatvely well represented
-% - lower freq sine wave performs better? more points in a period are sampled?
-% - sqaure wave has discontinutites. there aren't representd as well. Expand on this point in the DISCUSSION saying that even though this is the case, the sudden disconitnuities tend to be noise and electrical artefacts. the transient changes occur gradually, and as shown by the sin wave will be able to be captured
+\subsection{Standard Signals Test}
 
 From the experiments, the sine waves produced on the app were well represented compared to those produced on the PicoLog. The sine wave with a lower frequency held its shape better on the app as more points on the sine wave could be sampled as the signal frequency was much less than the app's sampling frequency of 1s. 
 
-On the other hand, the squares wave's discontinuities were not as sharp on the app compared to the PicoLog. This is due to the averaging method implemented on the Arduino. The Arduino reads in five input signal per second and the mean value is calculated and sent to the app. When a sharp discontinuity occurs, the averaging method softens this sudden change. Whilst the square wave cannot be replicated exactly, this issue doesn't affect the neurochemical signals. As seen in Figure~\ref{fig: SD}, any sharp discontinuities that occur are due to noise or electricrial 
+On the other hand, the squares wave's discontinuities were not as sharp on the app compared to the PicoLog. This is due to the averaging method implemented on the Arduino. The Arduino reads in five input signal per second and the mean value is calculated and sent to the app. When a sharp discontinuity occurs, the averaging method softens this sudden change. Whilst the square wave cannot be replicated exactly, this issue doesn't affect the neurochemical signals. As seen in Figure~\ref{fig: SD}, any sharp discontinuities that occur are due to noise or electrical artefacts, so the averaging method implemented will smooth out these. The transient changes that occur during an SD for potassium, glucose and lactate occur gradually so the shape will be able to be captured.
+
+% relate the above paragraph to testing with real signals if it shows what i have written.
+
+% mention time lag 
+
+\subsection{Spreading Depolarisation}
 
 \subsection{Limitations and Future Improvements}
 
