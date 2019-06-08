@@ -1,27 +1,25 @@
-From the test, the app is successfully able to support receiving and plotting three independent signals simultaneously. The app has a simple and professional design with clear navigation. The graphs displayed take up a large proportion of the screen to view the data clearly. To see finer detail, the graph can be zoomed and scaled and exact values of individual data points can be viewed by clicking on a point. The app shows all plots superimposed on one graph to allow for the transient decrease in glucose and transient increase of lactate and potassium that characterise a spreading depolarisation to be observed. However, if the user wishes to see an individual plot in detail, this too is allowed on the individual concentration pages shown on pages 3a, 3b and 3c in Figure~\ref{fig: storyboard}. These individual plots allow for the data to be viewed in terms of voltage or concentration, and the app prompts the user with instructions to view the concentration graph. These features allow the app to be user friendly and clearly present all the relevant data for a clinician to view.
+\subsection{iPad Application}
+The app is successfully able to support receiving and plotting three independent signals simultaneously. The app has a simple and professional design with clear navigation. The graphs displayed take up a large portion of the screen to view the data clearly. To see finer detail, the graph can be zoomed and scaled and exact values of individual data points can be viewed by clicking on a point. The app shows all plots superimposed on one graph to allow for the transient decrease in glucose and transient increase of lactate and potassium that characterise a spreading depolarisation to be observed. However, if the user wishes to see an individual plot in detail, this too is allowed on the individual concentration pages shown on pages 3a, 3b and 3c in Figure~\ref{fig: storyboard}. These individual plots allow for the data to be viewed in terms of voltage or concentration, and the app prompts the user with instructions to view the concentration graph. These features allow the app to be user friendly and clearly present all the relevant data for a clinician to view.
 
 % if i was able to implement detecting SD, include that here.
-
-% limited to qualitative analysis.
-
 
 
 \subsection{Standard Signals}
 
-From the experiments, the sine waves produced on the app were well represented compared with those produced on the PicoLog. Furthermore, the constant input voltage remained flat at 0V with no fluctuations, as expected to be seen.
-% The sine wave with a lower frequency held its shape better on the app as more points on the sine wave could be sampled as the signal frequency was much less than the app's sampling frequency of 1s. 
+The raw square wave, shown in Figure~\ref{fig: test1 picolog}, has an instantaneous change between the two voltage levels. However, on the app, the discontinuities were not as sharp. This is due to the averaging method implemented on the Arduino. The Arduino reads in five input signal per second and the mean value is calculated and sent to the app every second. When a sharp discontinuity occurs, the averaging method softens this sudden change. Whilst the square wave cannot be replicated exactly, this issue doesn't affect the neurochemical signals. As seen in Figure~\ref{fig: SD}, any sharp discontinuities that occur are due to noise or electrical artefacts, so the averaging method implemented will smooth these out. The transient changes that occur during an SD for potassium, glucose and lactate occur gradually so the shape will be captured.
 
-On the other hand, the squares wave's discontinuities were not as sharp on the app compared to the PicoLog. This is due to the averaging method implemented on the Arduino. The Arduino reads in five input signal per second and the mean value is calculated and sent to the app every second. When a sharp discontinuity occurs, the averaging method softens this sudden change. Whilst the square wave cannot be replicated exactly, this issue doesn't affect the neurochemical signals. As seen in Figure~\ref{fig: SD}, any sharp discontinuities that occur are due to noise or electrical artefacts, so the averaging method implemented will smooth these out. The transient changes that occur during an SD for potassium, glucose and lactate occur gradually so the shape will be captured.
+The effect of averaging and filtering noise and artefacts can be shown by comparing the noise signals in Figures~\ref{fig: test1 picolog} and \ref{fig: test1 app}. The raw noise signal displayed on PicoLog shows lots of sudden peaks. On the other hand, the app shows the noisy signal has been smoothed. 
 
-% discussion that the lag is kept constant
+Comparing the sine waves, the app shows a slightly more jagged signal. This is because the app has a lower sampling frequency of 1Hz, compared to the PicoScope's 5Hz sampling frequency. The higher frequency captures the signal better so results in a smoother wave. Regardless, the sine wave is well represented on the app.
 
-%The evaluation of the signals on the app and PicoLab was limited to qualitative analysis as it was not possible to obtain 
+The peak amplitudes of the sine and square wave on the app match that recorded on PicoLog. However, it can be noted that the app has a time lag of 1.25 seconds compared to the PicoScope because of the wireless transmission is not actually negligible as assumed in section \ref{section: real time}. However, this time lag is a systemic bias and is kept constant across all time values because all real time values are calculated with respect to when the Arduino was first turned on.
 
-% relate the above paragraph to testing with real signals if it shows what i have written.
 
-% mention time lag 
 
 \subsection{Spreading Depolarisation}
+
+
+
 
 \subsection{Limitations and Future Improvements}
 A major limitation of the prototype is the components used in the hardware. The inbuilt ADC on the Arduino only has 10-bit resolution and can only detect voltage readings between 0V and 5V. This gives a resolution of 4.88mV. An ADS1298 has 24-bit resolution, which allows to capture the neurochemical signals more precisely. For the same range of 0V to 5V, the resolution would be 0.298$\mu$V. The Arduino input pins also cannot receive input voltage outside of 0V to 5V. Whilst the neurochemical signals are not expected to exceed 5V, the potassium input can produce negative voltages, for example during calibration. These negative voltages need to be captured for the signals to be of clinical relevance. These issues will be resolved when the PCB being developed by the research group is used instead of the Arduino.
