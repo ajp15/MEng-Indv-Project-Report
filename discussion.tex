@@ -1,8 +1,21 @@
-\subsection{Standard Signals Test}
+From the test, the app is successfully able to support receiving and plotting three independent signals simultaneously. The app has a simple and professional design with clear navigation. The graphs displayed take up a large proportion of the screen to view the data clearly. To see finer detail, the graph can be zoomed and scaled and exact values of individual data points can be viewed by clicking on a point. The app shows all plots superimposed on one graph to allow for the transient decrease in glucose and transient increase of lactate and potassium that characterise a spreading depolarisation to be observed. However, if the user wishes to see an individual plot in detail, this too is allowed on the individual concentration pages shown on pages 3a, 3b and 3c in Figure~\ref{fig: storyboard}. These individual plots allow for the data to be viewed in terms of voltage or concentration, and the app prompts the user with instructions to view the concentration graph. These features allow the app to be user friendly and clearly present all the relevant data for a clinician to view.
 
-From the experiments, the sine waves produced on the app were well represented compared to those produced on the PicoLog. The sine wave with a lower frequency held its shape better on the app as more points on the sine wave could be sampled as the signal frequency was much less than the app's sampling frequency of 1s. 
+% if i was able to implement detecting SD, include that here.
 
-On the other hand, the squares wave's discontinuities were not as sharp on the app compared to the PicoLog. This is due to the averaging method implemented on the Arduino. The Arduino reads in five input signal per second and the mean value is calculated and sent to the app. When a sharp discontinuity occurs, the averaging method softens this sudden change. Whilst the square wave cannot be replicated exactly, this issue doesn't affect the neurochemical signals. As seen in Figure~\ref{fig: SD}, any sharp discontinuities that occur are due to noise or electrical artefacts, so the averaging method implemented will smooth out these. The transient changes that occur during an SD for potassium, glucose and lactate occur gradually so the shape will be able to be captured.
+% limited to qualitative analysis.
+
+
+
+\subsection{Standard Signals}
+
+From the experiments, the sine waves produced on the app were well represented compared with those produced on the PicoLog. Furthermore, the constant input voltage remained flat at 0V with no fluctuations, as expected to be seen.
+% The sine wave with a lower frequency held its shape better on the app as more points on the sine wave could be sampled as the signal frequency was much less than the app's sampling frequency of 1s. 
+
+On the other hand, the squares wave's discontinuities were not as sharp on the app compared to the PicoLog. This is due to the averaging method implemented on the Arduino. The Arduino reads in five input signal per second and the mean value is calculated and sent to the app every second. When a sharp discontinuity occurs, the averaging method softens this sudden change. Whilst the square wave cannot be replicated exactly, this issue doesn't affect the neurochemical signals. As seen in Figure~\ref{fig: SD}, any sharp discontinuities that occur are due to noise or electrical artefacts, so the averaging method implemented will smooth these out. The transient changes that occur during an SD for potassium, glucose and lactate occur gradually so the shape will be captured.
+
+% discussion that the lag is kept constant
+
+%The evaluation of the signals on the app and PicoLab was limited to qualitative analysis as it was not possible to obtain 
 
 % relate the above paragraph to testing with real signals if it shows what i have written.
 
@@ -11,4 +24,16 @@ On the other hand, the squares wave's discontinuities were not as sharp on the a
 \subsection{Spreading Depolarisation}
 
 \subsection{Limitations and Future Improvements}
+A major limitation of the prototype is the components used in the hardware. The inbuilt ADC on the Arduino only has 10-bit resolution and can only detect voltage readings between 0V and 5V. This gives a resolution of 4.88mV. An ADS1298 has 24-bit resolution, which allows to capture the neurochemical signals more precisely. For the same range of 0V to 5V, the resolution would be 0.298$\mu$V. The Arduino input pins also cannot receive input voltage outside of 0V to 5V. Whilst the neurochemical signals are not expected to exceed 5V, the potassium input can produce negative voltages, for example during calibration. These negative voltages need to be captured for the signals to be of clinical relevance. These issues will be resolved when the PCB being developed by the research group is used instead of the Arduino.
+
+Furthermore, the Bluefruit LE SPI Friend's limitations include the transmitted string being restricted to 20 character, and the speed of transmission that could be used in the prototype was 1 sample per second for each neurochemical signal. Ideally, all signal that the Arduino records should be sent to the app so that the app receives 5 samples per second. To achieve this, a BLE module that can send more characters at once, or one that is capable of sending data with smaller time intervals between transmission is required. If the app is able to receive all five readings per second for each neurochemical signal, then the averaging method would not need to be implemented on the Arduino. Instead, the app would receive the raw values and averaging could be implemented on the app. This means that the raw values would not be lost, and a better averaging method such as a moving average filter could be implemented instead of taking a block average.
+
+A further limitation of implementing a block average is that the time is not exact as it represents a set of data instead of an individual data point. When the average value is transmitted, the time wirelessly sent with the data is the time of the latest reading. If the app receives all the raw signals and a moving average filter is implemented on the app, then this would resolve the issue.
+
+Currently, the app only received data whilst it is open and connected to the BLE module. To improve the usability of the app, the Arduino or ATMega328p on the PCB could store data in the EEPROM until a connection is made and then transfer the data to the app. This is useful in case the Bluetooth module loses connection with the app. However, with the Bluefruit LE SPI Friend, sending a large store of data when the connection is made to the app may create a backlog of data and risk causing the Bluefruit to disconnect. A different BLE module would need to be used and the transmission process optimised for this purpose.
+
+To make the app more user friendly and improve its functionality, the app could be encoded to detect when calibration is occurring. This could be implemented by identifying the signals that correspond to the calibration process, as shown in Figure X % figure of calibration stage
+, then determining the equation to convert voltage to concentration for each neurochemical signal. This would eliminate the need for the clinician the manually insert the calibration values into the app.
+
+Furthermore, the app could be programmed to identify when an SD occurs, by identifying the transient changes that characterise an SD, and send a push notification or alert to inform the clinician. Highlighting the points in the data that could potentially indicate an SD would allow for the clinician to quickly identify points of concern and allow for quicker diagnosis than the clinician manually analysing the data. However, the expected change in concentration during an SD can vary by a large amount i.e.glucose transiently decreases by approximately 18-93$\mu M$ and lactate transiently increases by 5-100$\mu M$. Therefore to improve how effectively the app identifies an SD, using machine leaning, the app could be trained with a large data set of spreading depolarisation waves and learn to identify a SD in real time. 
 

@@ -1,14 +1,30 @@
-% do i need subsections?
-
 \subsection{Standard Signals}
-% Insert plots comparing PicoLog and on app
-% comment on shape, peak to peak voltage etc. 
-% comment on peak time i.e. if there is a lag 
-% able to do three curves at once
 
-% comment on each wave.
-% - sine wave is relatvely well represented
-% - lower freq sine wave performs better? more points in a period are sampled?
-% - sqaure wave has discontinutites. there aren't representd as well. Expand on this point in the DISCUSSION saying that even though this is the case, the sudden disconitnuities tend to be noise and electrical artifacts. the transient changes occur gradually, and as shown by the sin wave will be able to be captured
+\begin{figure}[h!]
+\centering
+\includegraphics[trim={0cm 0cm 0cm  0cm}, clip, width=.9\textwidth]{./figures/standardsignals/picologChemComp.pdf}
+\captionsetup{justification=centering}
+\caption{Standard signals recorded using a PicoScope}
+\label{fig: test1 picolog}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[trim={0cm 0cm 0cm  0cm}, clip, width=.9\textwidth]{./figures/standardsignals/appChemComp.pdf}
+\captionsetup{justification=centering}
+\caption{Standard signals recorded using the iPad app}
+\label{fig: test1 app}
+\end{figure}
+
+Figure~\ref{fig: test1 picolog} shows the raw signals received on PicoLog, and Figure~\ref{fig: test1 app} shows the three signals received on the Chemical Composition page of the app after undergoing filtering and processing on the Arduino. 
+
+Looking at the noise signal, shown in green on both plots, the raw signal in Figure~\ref{fig: test1 picolog} shows lots of sudden peaks. The app shows the noisy signal has been smoothed due to the filtering and averaging methods implemented. 
+
+The raw square wave, shown in blue, has an instantaneous change between the two voltage levels. However, on the app, the change between the voltage levels is not sharp. The discontinuous nature of the square wave is not represented well on the app due to the block averaging method implemented. 
+
+Comparing the sine waves, shown in red, the app shows a slightly more jagged signal. This is because the app has a lower sampling frequency of 1Hz, compared to the PicoScope's 5Hz sampling frequency. The higher frequency captures the signal better so results in a smoother wave. Regardless, the sine wave is  well represented on the app.
+
+The peak amplitudes of the sine and square wave on the app match that recorded on PicoLog. However, it can be noted that between Figures~\ref{fig: test1 picolog} and \ref{fig: test1 app} there is a time lag of 1.25 seconds because of the delay incurred by wireless transmission.
+
 
 \subsection{Spreading Depolarisation}
