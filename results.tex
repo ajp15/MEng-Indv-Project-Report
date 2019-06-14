@@ -19,3 +19,25 @@ Figure~\ref{fig: test1 picolog} shows the raw signals received on PicoLog, and F
 
 
 \subsection{Spreading Depolarisation}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[trim={1.25cm 6cm 1.5cm  3cm}, clip, width=1\textwidth]{./figures/test2.pdf}
+\captionsetup{justification=centering}
+\caption{Left: Raw patient data obtained from LabChart. Right: Signals received on app. From top to bottom: Glucose, Lactate, Potassium.}
+\label{fig: test2}
+\end{figure}
+
+Figure~\ref{fig: test2} shows the raw patient signals, before downsampling and processing, compared to the signal received on the app. Figure~\ref{fig: test2 conc} shows the concentration graphs produced on the app calculated from the inputted calibration values.
+
+\begin{figure}[p]
+\centering
+\includegraphics[trim={1.3cm 1.3cm 1.3cm  10cm}, clip, width=.75\textwidth]{./figures/patientsignals/GlucoseC.PNG}
+\bigbreak
+\includegraphics[trim={1.3cm 1.3cm 1.3cm  10cm}, clip, width=.75\textwidth]{./figures/patientsignals/LactateC.PNG}
+\bigbreak
+\includegraphics[trim={1.3cm 1.3cm 1.3cm  10cm}, clip, width=.75\textwidth]{./figures/patientsignals/PotassiumC.PNG}
+\captionsetup{justification=centering}
+\caption{Concentration graphs. Top to bottom: Glucose, Lactate, Potassium.}
+\label{fig: test2 conc}
+\end{figure}
