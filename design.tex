@@ -16,12 +16,12 @@ The prototype developed intends to be integrated with a PCB currently being deve
 \label{fig: flowchart}
 \end{figure}
 
-The prototype developed in this project is a simplified model of the PCB. The prototype receives three amplified voltage signals, corresponding to glucose, lactate and potassium, so it continues on from the PCB block diagram after the ADS1298. The prototype then extends further from the functionality of the PCB by processing the received signals, developing the wireless transmission of the data and developing an iPad application, as shown in the flowchart in Figure~\ref{fig: flowchart}. The code for this project can be found in Appendix~\ref{appendix: a}.
+I have developed a prototype that is a simplified model of the PCB. The prototype receives three amplified voltage signals, corresponding to glucose, lactate and potassium, so it continues on from the PCB block diagram after the ADS1298. The prototype then extends further from the functionality of the PCB by processing the received signals, developing the wireless transmission of the data and developing an iPad application, as shown in the flowchart in Figure~\ref{fig: flowchart}. The prototype provides a simplified platform for the wireless transmission to be developed. The prototype can then be integrated with the research group's PCB, which is due summer 2019. The code for my project can be found in Appendix~\ref{appendix: a}.
 
 
 
 \subsection{Hardware}
-The hardware for the prototype consists of an Arduino Nano and an Adafruit Bluefruit LE SPI Friend, as shown in Figure~\ref{fig: breadboard}. The Arduino Nano was chosen as a suitable microcontroller for prototyping and mimicking the PCB as it also contains an ATmega328p microcontroller and has an inbuilt ADC. However, the ADC is only 10-bit, so it has poorer resolution than the ADS1298. The Arduino is also simple to programme due to the IDE and libraries available, making it suitable for prototyping.
+The hardware for the prototype consists of an Arduino Nano and an Adafruit Bluefruit LE SPI Friend, as shown in Figure~\ref{fig: breadboard}. The Arduino Nano was chosen as a suitable microcontroller for prototyping and mimicking the PCB as it also contains an ATmega328p microcontroller and has an inbuilt ADC. The ADC is only 10-bit, so it has poorer resolution than the ADS1298. However, the Arduino is simple to programme due to the IDE and libraries available, making it suitable for prototyping.
 
 \begin{figure}[H]
 \centering
@@ -38,12 +38,6 @@ The Arduino Nano receives three input voltage signals ranging from 0V to 5V at t
 \subsection{Firmware}
 The Arduino Nano is encoded to sample and process the three input signals received, then to control the Bluefruit to wirelessly transmit the signals via Bluetooth low energy (BLE). The algorithm encoded in the Arduino is described in Figure~\ref{fig: psuedocode}.
 
-
-\subsubsection{Signal Processing}
-Every 200ms the Arduino reads the input signals at the A0, A1 and A7 pins and records the time (in milliseconds since the Arduino was connected to power) at which sampling occurred. Each input signal received by the Arduino is filtered with a low-pass filter with a cut off frequency of 1Hz. This cut off frequency was chosen because the events indicating a SD occur over a long time frame, as shown in Figure~\ref{fig: SD}, hence the changes occur slowly and at low frequency. The low pass filter attenuates high frequency components that may arise from noise or patient movement, allowing for a cleaner signal to be obtained.
-
-For every five samples of data recorded, so in a 1s period, the mean voltage is calculated for each neurochemical signal. This averaging methods allows large deviations and spikes to be smoothed, thereby reducing the effect of noise on the outputted data. This averaged value is then transmitted to the iPad app, and the raw input readings are discarded.
-
 \begin{figure}[t!]
 \centering
 \includegraphics[trim={1cm 5cm 1cm  4cm}, clip, width=1\textwidth]{./figures/psuedocode.pdf}
@@ -51,6 +45,12 @@ For every five samples of data recorded, so in a 1s period, the mean voltage is 
 \caption{Flowchart of algorithm encoded in Arduino Nano}
 \label{fig: psuedocode}
 \end{figure}
+
+
+\subsubsection{Signal Processing}
+Every 200ms the Arduino reads the input signals at the A0, A1 and A7 pins and records the time (in milliseconds since the Arduino was connected to power) at which sampling occurred. Each input signal received by the Arduino is filtered with a low-pass filter with a cut off frequency of 1Hz. This cut off frequency was chosen because the events indicating a SD occur over a long time frame, as shown in Figure~\ref{fig: SD}, hence the changes occur slowly and at low frequency. The low pass filter attenuates high frequency components that may arise from noise or patient movement, allowing for a cleaner signal to be obtained.
+
+For every five samples of data recorded, so in a 1s period, the mean voltage is calculated for each neurochemical signal. This averaging methods allows large deviations and spikes to be smoothed, thereby reducing the effect of noise on the outputted data. This averaged value is then transmitted to the iPad app, and the raw input readings are discarded.
 
 
 
@@ -80,16 +80,16 @@ Adafruit provide a variety of Bluetooth low energy modules that are compatible w
 
 The Arduino Nano has inbuilt SPI pins: D11 is MOSI, D12 is MISO and D13 is SCK. These connect to the corresponding pins on the Bluefruit, which are shown by the orange connections in Figure~\ref{fig: breadboard}. D10 on the Arduino is programmed as the CS and D7 is programmed as the IRQ, which are then wired to the corresponding Bluefruit pins, shown by the blue wires in Figure~\ref{fig: breadboard}. 
 
-The Adafruit\_BluefruitLE\_nRF51 library provides a header file specifically for the Bluefruit LE SPI Friend which provides functions that allow for the transmission of data via BLE to a paired device. The function used is {\tt{ble.print()}}. The limitation of this function is that a maximum of 20 characters can be sent at a time otherwise the data becomes fragmented. This means that the data from each input pin and the corresponding time of recording had to be wirelessly transmitted one at a time rather than all three sent simultaneously to prevent the risk of the data fragmenting. The data from each input pin is outputted in characters as:
+The Adafruit\_BluefruitLE\_nRF51 library provides a header file specifically for the Bluefruit LE SPI Friend which provides functions that allow for the transmission of data via BLE to a paired device. The function used is {\tt{ble.print()}}. The limitation of this function is that a maximum of 20 characters can be sent at a time \cite{Townsend2018} otherwise the data becomes fragmented. This means that the data from each input pin and the corresponding time of recording had to be wirelessly transmitted one at a time rather than all three sent simultaneously to prevent the risk of the data fragmenting. The data from each input pin is outputted in characters as:
 
 \begin{align}
-    \tt{OutputString = ID + Time + Voltage + \backslash n}.
+    \tt{OutputString = ID + Time + Voltage + ``\backslash n"}.
     \nonumber
 \end{align}
 
-The \textit{ID} at the beginning identifies which signal is being sent i.e. G for glucose, and the newline character (\textit{$\backslash$n}) at the end concludes the string being transmitted. If both these identifiers are not present at these specific locations when received on the app, this indicates that the data is fragmented and the app will discard the data. 
+The \textit{ID} at the beginning identifies which signal is being sent i.e. G for glucose, and the newline character (\textit{$``\backslash$n"}) at the end concludes the string being transmitted. If both these identifiers are not present at these specific locations when received on the app, this indicates that the data is fragmented and the app will discard the data. 
 
-Another limitation was observed when all three strings were periodically sent within a 200ms period. The data would initially be sent correctly but after some time, the data would fragment. The Bluefruit struggled to send the data so quickly, which created a backlog of data that was responsible for the fragmentation. Eventually, the Bluetooth module would disconnect from the app. To prevent this, the three signals were periodically sent every 1s, spaced such that potassium was sent at 200ms, glucose at 600ms, and lactate on the 1s as highlighted in Figure~\ref{fig: psuedocode}. Since the neurochemical changes in the brain occur at slow rates, for example an SD event takes about 10 minutes, a sampling speed of 1s on the app is suitable for this application. 
+Another limitation was observed when all three strings were periodically sent within a 200ms period. The data would initially be sent correctly but after some time, the data would fragment. The Bluefruit struggled to send the data so quickly, which created a backlog of data that was responsible for the fragmentation. Eventually, the Bluetooth module would disconnect from the app. To prevent this, the three signals were periodically sent every 1s, spaced such that potassium was sent at 200ms, glucose at 600ms, and lactate on the 1s as highlighted in Figure~\ref{fig: psuedocode}. Since the neurochemical changes in the brain occur at low frequencies, a sampling speed of 1s on the app is suitable for this application. 
 
 
 
@@ -115,7 +115,7 @@ The real time is calculated by taking the clock time at which the first input is
 
 
 \subsubsection{Charts API}
-To convey the information to the clinician clearly, the data received was displayed graphically using the Charts API developed by Daniel Gindi. The API allowed for basic graphs to be fully customised based on the needs of this project. The graphs display the voltage recorded from an input pin against the real clock time of the reading for each neurochemical signal. The app allows for all three signals to be viewed on one graph, as seen on the Chemical Composition page in Figure~\ref{fig: storyboard}, or as individual plots shown on pages 3a, 3b and 3c. These individual plots can be accessed by clicking on the graph legends on the Chemical Composition page, located above the graph. All graphs can be scaled and are zoombale, allowing to clearly view specific data. Furthermore, clicking on a specific point on a plot displays a grey bubble which shows the corresponding $x$ and $y$ value at that point. This feature can be seen on the Chemical Composition page in Figure~\ref{fig: storyboard} but works across all plots on all pages.
+To convey the information to the clinician clearly, the data received was displayed graphically using the Charts API developed by Daniel Gindi \cite{Charts}. The API allowed for basic graphs to be fully customised based on the needs of this project. The graphs display the voltage recorded from an input pin against the real clock time of the reading for each neurochemical signal. The app allows for all three signals to be viewed on one graph, as seen on the Chemical Composition page in Figure~\ref{fig: storyboard}, or as individual plots as shown on pages 3a, 3b and 3c. These individual plots can be accessed by clicking on the graph legends on the Chemical Composition page, located above the graph. All graphs can be scaled and are zoombale, allowing to clearly view specific data. Furthermore, clicking on a specific point on a plot displays a grey bubble which shows the corresponding $x$ and $y$ value at that point. This feature can be seen on the Chemical Composition page in Figure~\ref{fig: storyboard} but works across all plots on all pages.
 
 
 \subsubsection{Calibration}
@@ -139,9 +139,8 @@ For the individual concentration plots on pages 3a, 3b, and 3c in Figure~\ref{fi
 The Boutelle Group have developed a novel auto-calibration system that uses programmable values and microfluidic pumps to deliver known concentrations of potassium, glucose and lactate, shown in Table~\ref{table: calibration conc}, to the microfluidic analysis system and the outputted voltage is recorded. Calibration occurs automatically every three hours whilst monitoring a patient because the sensors degrade over time, hence the voltage output for the same known concentration will change with time \cite{Rogers2017}. The Chemical Composition page of the app allows for the calibration values to be typed into the text field. Once the calibration voltages have been inputted, the input voltages can be converted into concentration when the \textit{Concentration} button is clicked on the segmented control, and the graph displays concentration against real time. If calibration values are not provided and the \textit{Concentration} button is clicked, the app will prompt the user to insert the calibration voltages on the Chemical Composition page. 
 
 \subsubsection{Potassium Calibration}
-%\noindent \underline{Potassium Calibration} 
 
-For potassium, the conversion from voltage to concentration is given by a logarithmic relationship and can be derived by considering an ion selective electrode (ISE), as shown in Figure~\ref{fig: ISE}. The ISE has an ion-sensing membrane that responds selectively to a specific ion and outputs a voltage proportional to the activity of this ion \cite{Rogers2017, LibreTexts2019} and can be derived as follows. 
+For potassium, the conversion from voltage to concentration is given by a logarithmic relationship and can be derived by considering the potassium sensor, which is an ion selective electrode (ISE) as shown in Figure~\ref{fig: ISE}. The ISE has an ion-sensing membrane that responds selectively to a specific ion and outputs a voltage proportional to the activity of this ion \cite{Rogers2017, LibreTexts2019} and can be derived as follows. 
 
 The potential difference across the membrane, $E_{membrane}$ is given as the difference between the external side of the membrane, $E_{outer}$, where the analyte solution is, and the interal side of the membrane, $E_{inner}$ where the reference solution is:
 
@@ -153,34 +152,34 @@ The potential difference across the membrane, $E_{membrane}$ is given as the dif
 The potential on each side of the membrane can be described with respect to activity by using the Nernst Potential:
 
 \begin{equation}
-    E_{ext} = E^{0} + \frac{0.05916}{z}\log A_{k,ext}, 
+    E_{ext} = E^{0} + \frac{0.05916}{z}\log a_{k,ext}, 
     \label{equation: outer Nernst} 
 \end{equation}
 \begin{equation}
-    E_{int} = E^{0} + \frac{0.05916}{z}\log A_{k,int}.
+    E_{int} = E^{0} + \frac{0.05916}{z}\log a_{k,int}.
     \label{equation: inner Nernst}
 \end{equation}
 
-\noindent $E^{0}$ is the standard cell potential which is a constant, $z$ is the charge of the ion of interest which in this case is potassium so $z=1$, $A_{k,ext}$ is the activity of potassium ions in the analyte solution, and $A_{k,int}$ is the activity of the potassium ions in the reference solution which is constant. Therefore, equation (\ref{equation: inner Nernst}) is equivalent to a constant value.
+\noindent $E^{0}$ is the standard cell potential which is a constant, $z$ is the charge of the ion of interest which in this case is potassium so $z=1$, $a_{k,ext}$ is the activity of potassium ions in the analyte solution, and $a_{k,int}$ is the activity of the potassium ions in the reference solution which is constant. Therefore, equation (\ref{equation: inner Nernst}) is equivalent to a constant value.
 
 Substituting equations (\ref{equation: outer Nernst}) and (\ref{equation: inner Nernst}) into equation (\ref{equation: membrane potential}), the following equation is obtained:
 
 \begin{equation}
-    E_{membrane} = constant + 0.05916\log A_{k,ext}.
+    E_{membrane} = constant + 0.05916\log a_{k,ext}.
     \label{equation: membrane potential 2}
 \end{equation}
 
 The relationship between activity and concentration is given as:
 
 \begin{equation}
-    A_{k,ext} = \gamma [K^{+}],
+    a_{k,ext} = \gamma [K^{+}],
     \label{equation: activity}
 \end{equation}
 
-\noindent where $\gamma$ is the activity coefficient which is a constant, and $[K^{+}]$ is the concentration of potassium ions. Taking the logarithm on both sides gives:
+\noindent where $[K^{+}]$ is the concentration of potassium ions, and $\gamma$ is the activity coefficient which is approximately constant since $[K^{+}]$ is small. Taking the logarithm on both sides gives:
 
 \begin{align}
-    \log A_{k,ext} = \log\gamma + \log [K^{+}] = constant + \log [K^{+}].
+    \log a_{k,ext} = \log\gamma + \log [K^{+}] = constant + \log [K^{+}].
     \label{equation: log activity}
 \end{align}
 
