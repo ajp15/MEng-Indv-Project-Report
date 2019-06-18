@@ -4,20 +4,17 @@
 
 \begin{document}
 
-%\input{titlepage.tex}
+\input{titlepage.tex}
 
-%\begin{abstract}
-    % Sentence of two about TBI and secondary TBI
-    % Sentence about aim of the project
-    % Sentence about the prototype
-    % Two sentences about the app
-    % Sentence about things that were tested to prove
-    % Summarise results/discussion about testing
-    % Future improvements
+\begin{abstract}
+Traumatic Brain Injury (TBI) is caused by an impact to the head which causes damage to the brain. From the primary injury site, spreading depolarisation (SD) waves \cite{Leao1944} propagate to surrounding brain tissue and causes further damage. This can lead to secondary TBI, which can cause life-long disabilities or be fatal \cite{Hartings2011}. It is crucial to diagnose secondary TBI early and this can be achieved by continuously monitoring glucose, lactate, and potassium concentrations in the brain and analysing the quantitative data. If the glucose concentration transiently decreases and simultaneously both lactate and potassium concentrations transiently increase, this indicates the occurrence of an SD \cite{D.2010}.
+
+This project aims to develop a prototype that can be integrated with a continuous online microdialysis system \cite{Rogers2017}, which records glucose, lactate, and potassium signals, and wirelessly transmits the information to an iPad application. A clinician can view the data in real time and identify if SDs are occurring in the patient's brain. The signals are displayed graphically on the app but the user is also able to obtain numerical data. The prototype was tested with standard signals as well as patient data which contained the characteristic transient changes indicating an SD. The app was successfully able to display voltage recordings in real time with an error of less than 4\%, and was capable of calculating the concentrations of glucose, lactate, and potassium in the brain from the electrochemical signals obtained. Future improvements are discussed to extend system performance and ultimately improve early diagnosis.
+
     
-%\end{abstract}
+\end{abstract}
 
-%\newpage
+\newpage
 
 
 \section{Introduction}
@@ -40,27 +37,30 @@
 \input{discussion.tex}
 \newpage
 
+\section{Conclusion}
+The prototype has been designed such that the firmware features can be integrated with the finished PCB developed by the Boutelle group. This allows for wireless transmission between the PCB and the app. The prototype was successfully able to transmit three signals simultaneously and display them in real time on the app. The app was able to clearly display the received signals and SD waves graphically. Users are able to access numerical data from the graphs which allows clinicians to conduct more detailed analysis. Finally, the prototype was successfully able to provide information of clinical relevance by allowing accurate conversion of voltage signals to concentration.
 
+\newpage
 
-%\section{Acknowledgements}
-%I would like to thank Professor Martyn Boutelle for allowing me to pursue this project that has greatly diversified my skill set, and for guiding me through this project. I would also like to thank Dr. Michelle Rogers for helping me navigate through LabChart and understanding the data. I would like to thank Aidan Wickham for providing me with details about his PCB, which this project is based on. I would also like to thank Georgios Zafeiropoulos and Konstantinos Petkos for guiding me through the best methods to validate and test my prototype. 
+\section{Acknowledgements}
+I would like to thank Professor Martyn Boutelle for allowing me to pursue this project that has greatly diversified my skill set, and for guiding me through this project. I would also like to thank Dr. Michelle Rogers for helping me navigate through LabChart and understand the data. I would like to thank Aidan Wickham for providing me with details about his PCB, which this project is based on. I would also like to thank Georgios Zafeiropoulos and Konstantinos Petkos for guiding me through the best methods to validate and test my prototype. 
 
-%Finally, I would like to thank my parents, Dr. Jayaprakash Pattar and Dr. Jyothsna Murthy, for believing in me more than I could ever believe in myself, and Rohan Padmanabhan for always supporting me through the highs and lows of this project.
+Finally, I would like to thank my parents, Dr. Jayaprakash Pattar and Dr. Jyothsna Murthy, for believing in me more than I could ever believe in myself, and Rohan Padmanabhan for always supporting me through the highs and lows of this project.
 
-%\newpage
+\newpage
 \bibliography{library.bib}
 \bibliographystyle{unsrt}
 
-%\newpage
+\newpage
 
-%\appendix
+\appendix
 
-%\section{Appendix: Project Code}
-%\label{appendix: a}
-%\begin{itemize}
-%    \item Firmware code can be found at: \newline \url{https://github.com/ajp15/MEngIndvProject-arduino}
- %   \item iPad app development can be found at: \newline \url{https://github.com/ajp15/MEngIndvProject-app2}
-%\end{itemize}
+\section{Appendix: Project Code}
+\label{appendix: a}
+\begin{itemize}
+    \item Firmware code can be found at: \newline \url{https://github.com/ajp15/MEngIndvProject-arduino}
+   \item iPad app development can be found at: \newline \url{https://github.com/ajp15/MEngIndvProject-app2}
+\end{itemize}
 
 
 \end{document}

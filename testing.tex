@@ -5,7 +5,7 @@ To validate the iPad application, the prototype was tested with standard signals
 \centering
 \begin{tabular}{||c c c||} 
  \hline
- Input Pin & electrochemical & Signal Description \\ [0.5ex] 
+ Input Pin & Electrochemical & Signal Description \\ [0.5ex] 
  \hline\hline
  A0 & Glucose & Noise signal, 1V P-P voltage, 0.5V offset \\
  A1 & Lactate & 0.1Hz square wave, 1V P-P voltage, 0.5V offset \\
@@ -16,13 +16,13 @@ To validate the iPad application, the prototype was tested with standard signals
 \label{table: standard signals}
 \end{table}
 
-The signals were chosen to have a low frequency of 0.1Hz since the electrochemical signals present during the occurrence of a SD display changes slowly and over a long time frame. Furthermore, the app only receives data once every second from each input, hence according the the Nyquist rate, frequencies above 0.5Hz will undergo aliasing and will not be reconstructed well.
+The signals were chosen to have a low frequency of 0.1Hz since the electrochemical signals present during the occurrence of an SD display changes slowly and over a long time frame. Furthermore, the app only receives data once every second from each input, hence according the the Nyquist rate, frequencies above 0.5Hz will undergo aliasing and will not be reconstructed well.
 
 The standard signals inputted to the Arduino pins were produced by a signal generator. In parallel, these signals also went to a PicoScope input channel, which was then connected to a laptop so that the signals could be recorded on PicoLog with a sampling frequency of 5Hz. The signals displayed on PicoLog could then be compared with the signals received on the iPad app post processing and transmission. Figure~\ref{fig: test1} shows the setup of the experiment.
 
 \begin{figure}[h!]
 \centering
-\includegraphics[trim={0cm 3cm 0cm  3cm}, clip, width=.9\textwidth]{./figures/test1.pdf}
+\includegraphics[trim={0cm 3.5cm 0cm  3.5cm}, clip, width=1\textwidth]{./figures/test1.pdf}
 \captionsetup{justification=centering}
 \caption{Experimental setup for testing standard signals.}
 \label{fig: test1}
@@ -37,26 +37,26 @@ This test aimed to see if the characteristics of the SD could be visualised on t
 \centering
 \begin{tabular}{||c c c c c||} 
  \hline
- electrochemical & P-P Voltage & SD range & Amplification & Processing\\ [0.5ex] 
+ Electrochemical & P-P Voltage & SD range & Amplification & Capping\\ [0.5ex] 
  \hline\hline
  Glucose & -4.29V -- 6.8V & 0.35V -- 0.7V & No & Yes \\
  Lactate & 0V -- 1.903V & 0V -- 1.903V & No & No \\
  Potassium & 21.59mV -- 79.59mV & 0mV - 20mV & x100 & Yes \\
  \hline
 \end{tabular}
-\caption{Patient data characteristics and if processing and amplification were required.}
+\caption{Patient data characteristics and whether signals were amplified or capped.}
 \label{table: patient data}
 \end{table}
 
-Since potassium has a low voltage range during a SD and the Arduino is limited to 4.88mV resolution, the signal was multiplied by 100 for testing purposes so that the Arduino could detect the signal with higher precision. The app was temporarily modified to divide the received signal by 100. Potassium and glucose were then processed so that the signals were capped between 0V and 5V, which is the range the Arduino can detect. The signals were then programmed into the AWG. 
+Since potassium has a low voltage range during an SD and the Arduino is limited to 4.88mV resolution, the signal was multiplied by 100 for testing purposes so that the Arduino could detect the signal with higher precision. The app was temporarily modified to divide the received signal by 100. Potassium and glucose were then processed so that the signals were capped between 0V and 5V, which is the range the Arduino can detect. The signals were then programmed into the AWG. 
 
-Each electrochemical signal was tested one at a time since the AWG is limited to outputting one signal, and only one AWG was available to use. The output channel of the AWG was connected to an Arduino input pin depending on which signal was being tested. The other two input channels were connected to ground. Each signal was recorded on the app and then compared to the original patient data.
+Each electrochemical signal was tested one at a time since the AWG is limited to outputting one signal, and only one AWG was accessible. The output channel of the AWG was connected to an Arduino input pin depending on which signal was being tested. The other two input channels were connected to ground. Each signal was recorded on the app and then compared to the original patient data.
 
 \begin{table}[h!]
 \centering
 \begin{tabular}{||c c c||} 
  \hline
- electrochemical & Concentration (mM) & Voltage (mV) \\ [0.5ex]
+ Electrochemical & Concentration (mM) & Voltage (mV) \\ [0.5ex]
  \hline\hline
  Glucose & 0.00 & 167.00 \\
   & 1.00 & 969.60 \\
@@ -73,5 +73,6 @@ Each electrochemical signal was tested one at a time since the AWG is limited to
 \label{table: test2 calibration}
 \end{table}
 
-Since real patient data was used for testing, the segmented control switch feature on the app that allows to view the plots as concentration against time could be tested. Calibration values were obtained from the patient data \cite{Rogers2017} and are shown in Table~\ref{table: test2 calibration}. These values were inserted into the text fields on the app during testing.
+
+As real patient data was used, it was possible to test the segmented control switch feature on the app that allows for viewing of the plots as concentration against time. Calibration values were obtained from the patient data \cite{Rogers2017} and are shown in Table~\ref{table: test2 calibration}. These values were inserted into the text fields on the app during testing.
 
